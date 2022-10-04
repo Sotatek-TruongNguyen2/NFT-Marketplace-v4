@@ -6,7 +6,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
 
 !isLocalNetwork
   ? describe.skip
-  : describe('NFT MarketplaceUnit tests', () => {
+  : describe('Dynamic NFT Unit tests', () => {
       let dynamicNFT, deployer, tokenCounter;
       const { chainId } = network.config;
 
@@ -60,8 +60,6 @@ const isLocalNetwork = developmentChains.includes(network.name);
 
             dynamicNFT.once('NFTMinted', async () => {
               try {
-                console.log('>>>>>> NFTMinted');
-
                 // update token counter
                 const tokenCounterEnd = await dynamicNFT.getTokenCounter();
                 assert.equal(
