@@ -23,7 +23,7 @@ error NftMarketplace__NotOwner();
 error NftMarketplace__NoEarnings();
 error NftMarketplace__WithdrawFailed();
 
-contract NftMarketplace is ReentrancyGuard {
+contract NFTMarketplace is ReentrancyGuard {
     struct Listing {
         uint256 price;
         address seller;
