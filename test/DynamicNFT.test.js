@@ -60,8 +60,6 @@ const isLocalNetwork = developmentChains.includes(network.name);
 
             dynamicNFT.once('NFTMinted', async () => {
               try {
-                console.log('>>>>>> NFTMinted');
-
                 // update token counter
                 const tokenCounterEnd = await dynamicNFT.getTokenCounter();
                 assert.equal(
