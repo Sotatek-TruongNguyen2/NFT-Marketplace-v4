@@ -1,6 +1,6 @@
 const { assert, expect } = require('chai');
 const { getNamedAccounts, deployments, network, ethers } = require('hardhat');
-const { developmentChains } = require('../helper-hardhat-config');
+const { developmentChains } = require('../../helper-hardhat-config');
 
 const isLocalNetwork = developmentChains.includes(network.name);
 
