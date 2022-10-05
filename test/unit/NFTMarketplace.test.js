@@ -112,7 +112,9 @@ const isLocalNetwork = developmentChains.includes(network.name);
       });
 
       describe('cancelListing', () => {
-        it('Reverts if listing is not canceled by owner', async () => {
+        it('Reverts if item is not canceled by owner', async () => {
+          await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+
           nftMarketplace = await nftMarketplaceContract.connect(player);
           await dynamicNFT.approve(player.address, tokenId);
 
@@ -133,9 +135,11 @@ const isLocalNetwork = developmentChains.includes(network.name);
           );
         });
 
-        it('Updates listing correctly', async () => {
+        it('Remove item from listing correctly & emits an event upon removal success', async () => {
           await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
-          await nftMarketplace.cancelListing(dynamicNFT.address, tokenId);
+          expect(
+            await nftMarketplace.cancelListing(dynamicNFT.address, tokenId)
+          ).to.emit('ItemCanceled');
 
           const canceledItem = await nftMarketplace.getListingItem(
             dynamicNFT.address,
@@ -144,13 +148,50 @@ const isLocalNetwork = developmentChains.includes(network.name);
 
           assert.equal(canceledItem.price.toNumber(), 0);
         });
+      });
 
-        it('Emits an event after cancel listing', async () => {
-          await nftMarketplace.listItem(dynamicNFT.addrses, tokenId, price);
+      describe('updateListing', () => {
+        it('Reverts if item is not listed', async () => {
+          await expect(
+            nftMarketplace.updateListing(dynamicNFT.address, tokenId, price)
+          ).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__TokenNotListed'
+          );
+        });
 
+        it('Reverts if item is not updating by owner', async () => {
+          nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+
+          nftMarketplace = await nftMarketplaceContract.connect(player);
+          await dynamicNFT.approve(player.address, tokenId);
+
+          await expect(
+            nftMarketplace.updateListing(dynamicNFT.address, tokenId, price)
+          ).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__NotOwner'
+          );
+        });
+
+        it('Updates item info correctly & emit an event upon update success', async () => {
+          nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+
+          const newPrice = ethers.utils.parseEther('0.02');
           expect(
-            await nftMarketplace.cancelListing(dynamicNFT.address, tokenId)
-          ).to.emit('ItemCanceled');
+            await nftMarketplace.updateListing(
+              dynamicNFT.address,
+              tokenId,
+              newPrice
+            )
+          ).to.emit('ItemListed');
+
+          const item = await nftMarketplace.getListingItem(
+            dynamicNFT.address,
+            tokenId
+          );
+
+          assert.equal(item.price.toString(), newPrice.toString());
         });
       });
     });
