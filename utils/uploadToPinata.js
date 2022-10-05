@@ -34,7 +34,7 @@ const storeImagesAndMetadata = async (imgFilePath) => {
     try {
       // Store the image in IPFS
       const pinFileResp = await pinata.pinFileToIPFS(readableStreamForFile);
-      console.log(`>>>>>> Upload ${fileName} to IPFS success!`);
+      console.log(`>>>>>> Upload ${fileName} image to IPFS success!`);
 
       const description = `A cute ${catName} cat!`;
       const image = `ipfs://${pinFileResp.IpfsHash}`;
@@ -45,9 +45,18 @@ const storeImagesAndMetadata = async (imgFilePath) => {
         image,
       });
 
+      const metadataOptions = {
+        pinataMetadata: {
+          name: fileName.replace('.png', '.json'),
+        },
+      };
+
       try {
         // Store the metadata in IPFS
-        const pinJsonResp = await pinata.pinJSONToIPFS(tokenURIMetadata);
+        const pinJsonResp = await pinata.pinJSONToIPFS(
+          tokenURIMetadata,
+          metadataOptions
+        );
 
         console.log(`>>>>>> Upload ${fileName} metadata to IPFS success!`);
         const tokenURI = `ipfs://${pinJsonResp.IpfsHash}`;
