@@ -38,7 +38,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
         dynamicNFT = await dynamicNFTContract.connect(deployer);
 
         nftMarketplaceContract = await ethers.getContract('NFTMarketplace');
-        nftMarketplace = await nftMarketplaceContract.connect(deployer);
+        nftMarketplace = nftMarketplaceContract.connect(deployer);
 
         // mint NFT
         await dynamicNFT.mintNFT(4);
@@ -99,7 +99,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
           // connect market place to player
           // NFT is now owned by deployer (deployer minted in `beforeEach`)
           // this will trigger `isOwner` modifier check error
-          nftMarketplace = await nftMarketplaceContract.connect(player);
+          nftMarketplace = nftMarketplaceContract.connect(player);
           dynamicNFT.approve(player.address, tokenId);
 
           await expect(
@@ -115,7 +115,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
         it('Reverts if item is not canceled by owner', async () => {
           await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
 
-          nftMarketplace = await nftMarketplaceContract.connect(player);
+          nftMarketplace = nftMarketplaceContract.connect(player);
           await dynamicNFT.approve(player.address, tokenId);
 
           await expect(
@@ -163,7 +163,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
         it('Reverts if item is not updating by owner', async () => {
           nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
 
-          nftMarketplace = await nftMarketplaceContract.connect(player);
+          nftMarketplace = nftMarketplaceContract.connect(player);
           await dynamicNFT.approve(player.address, tokenId);
 
           await expect(
@@ -193,5 +193,107 @@ const isLocalNetwork = developmentChains.includes(network.name);
 
           assert.equal(item.price.toString(), newPrice.toString());
         });
+      });
+
+      describe('buyItem', () => {
+        it('Reverts if item is not listed', async () => {
+          await expect(
+            nftMarketplace.buyItem(dynamicNFT.address, tokenId, {
+              value: price,
+            })
+          ).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__TokenNotListed'
+          );
+        });
+
+        it('Reverts if price is not met', async () => {
+          await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+
+          const lowPrice = ethers.utils.parseEther('0.005');
+
+          await expect(
+            nftMarketplace.buyItem(dynamicNFT.address, tokenId, {
+              value: lowPrice,
+            })
+          ).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__PriceNotMet'
+          );
+        });
+
+        it('Transfers NFT to buyer, updates earnings record, remove item from listings & emits an event for item bought', async () => {
+          //  deployer (seller) list item
+          await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+
+          // player connect to market place
+          nftMarketplace = nftMarketplaceContract.connect(player);
+
+          // player buys the NFT
+          expect(
+            await nftMarketplace.buyItem(dynamicNFT.address, tokenId, {
+              value: price,
+            })
+          ).to.emit('ItemBought'); // emits event
+
+          // Transfers NFT to buyer
+          const nftNewOwner = await dynamicNFT.ownerOf(tokenId);
+          assert.equal(nftNewOwner.toString(), player.address);
+
+          // Updates earnings record
+          const sellerEarnings = await nftMarketplace.getEarnings(
+            deployer.address
+          );
+          assert.equal(sellerEarnings.toString(), price.toString());
+
+          // Remove item from listings
+          const itemBought = await nftMarketplace.getListingItem(
+            dynamicNFT.address,
+            tokenId
+          );
+
+          assert.equal(itemBought.price.toString(), 0);
+        });
+      });
+
+      describe('withdraw', () => {
+        it('Reverts if there is no earnings', async () => {
+          await expect(nftMarketplace.withdraw()).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__NoEarnings'
+          );
+        });
+
+        it('Updates earnings record during withdraw', async () => {});
+        it('Seller can withdraws ETH successfully', async () => {
+          //  deployer (seller) list item
+          await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+          // player connect to market place
+          nftMarketplace = nftMarketplaceContract.connect(player);
+
+          // player buys the NFT
+          await nftMarketplace.buyItem(dynamicNFT.address, tokenId, {
+            value: price,
+          });
+
+          // connect market place back to deployer for withdraw
+          nftMarketplace = nftMarketplaceContract.connect(deployer);
+
+          // get deployer (seller) balance
+          const sellerBalanceStart = await deployer.getBalance();
+          // withdraw
+          const tx = await nftMarketplace.withdraw();
+          const { gasUsed, effectiveGasPrice } = await tx.wait(1);
+          const gasCost = gasUsed.mul(effectiveGasPrice);
+
+          const sellerBalanceEnd = await deployer.getBalance();
+          // assert
+          assert.equal(
+            sellerBalanceEnd.add(gasCost).toString(),
+            sellerBalanceStart.add(price).toString()
+          );
+        });
+
+        it('Reverts if withdraw fails', async () => {});
       });
     });
