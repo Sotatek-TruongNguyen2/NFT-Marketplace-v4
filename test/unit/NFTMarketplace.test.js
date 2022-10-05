@@ -58,7 +58,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
 
         it('Updates listing with seller & price', async () => {
           await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
-          const listings = await nftMarketplace.getListings(
+          const listings = await nftMarketplace.getListingItem(
             dynamicNFT.address,
             tokenId
           );
@@ -108,6 +108,49 @@ const isLocalNetwork = developmentChains.includes(network.name);
             nftMarketplace,
             'NftMarketplace__NotOwner'
           );
+        });
+      });
+
+      describe('cancelListing', () => {
+        it('Reverts if listing is not canceled by owner', async () => {
+          nftMarketplace = await nftMarketplaceContract.connect(player);
+          await dynamicNFT.approve(player.address, tokenId);
+
+          await expect(
+            nftMarketplace.cancelListing(dynamicNFT.address, tokenId)
+          ).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__NotOwner'
+          );
+        });
+
+        it('Reverts if canceled item is not listed', async () => {
+          await expect(
+            nftMarketplace.cancelListing(dynamicNFT.address, tokenId)
+          ).to.be.revertedWithCustomError(
+            nftMarketplace,
+            'NftMarketplace__TokenNotListed'
+          );
+        });
+
+        it('Updates listing correctly', async () => {
+          await nftMarketplace.listItem(dynamicNFT.address, tokenId, price);
+          await nftMarketplace.cancelListing(dynamicNFT.address, tokenId);
+
+          const canceledItem = await nftMarketplace.getListingItem(
+            dynamicNFT.address,
+            tokenId
+          );
+
+          assert.equal(canceledItem.price.toNumber(), 0);
+        });
+
+        it('Emits an event after cancel listing', async () => {
+          await nftMarketplace.listItem(dynamicNFT.addrses, tokenId, price);
+
+          expect(
+            await nftMarketplace.cancelListing(dynamicNFT.address, tokenId)
+          ).to.emit('ItemCanceled');
         });
       });
     });
