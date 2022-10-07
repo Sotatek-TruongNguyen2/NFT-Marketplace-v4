@@ -10,7 +10,7 @@ const cancelItem = async () => {
   const nftMarketplace = await ethers.getContract('NFTMarketplace');
   const dynamicNFT = await ethers.getContract('DynamicNFT');
 
-  const tx = await nftMarketplace.cancelItem(dynamicNFT.address, tokenId);
+  const tx = await nftMarketplace.cancelListing(dynamicNFT.address, tokenId);
   await tx.wait(1);
 
   console.log('>>>>>> Item Canceled!');
