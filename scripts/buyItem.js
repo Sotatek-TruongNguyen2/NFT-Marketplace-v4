@@ -10,7 +10,7 @@ const buyItem = async () => {
   const nftMarketplace = await ethers.getContract('NFTMarketplace');
   const dynamicNFT = await ethers.getContract('DynamicNFT');
   const listingItem = await nftMarketplace.getListingItem(
-    dynamicNFT.addrses,
+    dynamicNFT.address,
     tokenId
   );
   const price = await listingItem.price.toString();
