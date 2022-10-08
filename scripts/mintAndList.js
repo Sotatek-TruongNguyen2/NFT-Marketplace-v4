@@ -9,7 +9,7 @@ const price = ethers.utils.parseEther('0.01');
 const mintAndList = async () => {
   const nftMarketplace = await ethers.getContract('NFTMarketplace');
   const dynamicNFT = await ethers.getContract('DynamicNFT');
-  const randomNumber = Math.floor(Math.random() * 6);
+  const randomNumber = Math.floor(Math.random() * 6) + 1;
 
   console.log('>>>>>> Minting NFT...');
   const mintTx = await dynamicNFT.mintNFT(randomNumber);

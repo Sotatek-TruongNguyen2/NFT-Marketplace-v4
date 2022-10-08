@@ -46,7 +46,7 @@ contract DynamicNFT is ERC721URIStorage {
     }
 
     function getCat(uint256 index) public pure returns (CatType) {
-        if (index > 6) {
+        if (index > 7) {
             revert DynamicNFT__IndexOutOfRange();
         }
 
