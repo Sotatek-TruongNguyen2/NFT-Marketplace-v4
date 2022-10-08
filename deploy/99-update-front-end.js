@@ -16,7 +16,7 @@ const ADDRESSES_FILE_MORALIS = path.resolve(
 );
 const MARKETPLACE_ABI_MORALIS = path.resolve(
   moralisFrontEndDir,
-  'constants/marketplace-abi.json'
+  'constants/marketplaceAbi.json'
 );
 // const ADDRESSES_FILE_THE_GRAPH = path.resolve(
 //   theGraphFrontEndDir,
@@ -24,7 +24,7 @@ const MARKETPLACE_ABI_MORALIS = path.resolve(
 // );
 // const MARKETPLACE_ABI_THE_GRAPH = path.resolve(
 //   theGraphFrontEndDir,
-//   'constants/marketplace-abi.json'
+//   'constants/marketplaceAbi.json'
 // );
 
 module.exports = async () => {
@@ -49,21 +49,14 @@ async function updateContractAddresses(contract) {
     });
   }
 
-  console.log('>>>>>> address data', addressData);
   const addressRecords = JSON.parse(addressData);
   const contractAddress = contract.address;
   const chainId = network.config.chainId.toString();
 
   if (chainId in addressRecords) {
-    const chainRecord = addressRecords[chainId];
-
-    if (!chainRecord.NFTMarketplace) {
-      chainRecord.NFTMarketplace = [contractAddress];
-    } else if (!chainRecord.NFTMarketplace.includes(contractAddress)) {
-      chainRecord.NFTMarketplace.push(contractAddress);
-    }
+    addressRecords[chainId].NFTMarketplace = contractAddress;
   } else {
-    addressRecords[chainId] = { NFTMarketplace: [contractAddress] };
+    addressRecords[chainId] = { NFTMarketplace: contractAddress };
   }
 
   try {
