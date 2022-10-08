@@ -28,7 +28,7 @@ const mintAndList = async () => {
 
   if (isLocalNetwork) {
     // Moralis has a hard time if you move more than 1 at once!
-    await moveBlocks(1, (interval = 1));
+    await moveBlocks(1, (interval = 1000));
   }
 };
 
