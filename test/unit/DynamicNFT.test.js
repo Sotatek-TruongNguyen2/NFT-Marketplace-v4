@@ -36,7 +36,7 @@ const isLocalNetwork = developmentChains.includes(network.name);
         });
 
         it('Reverts when index is out of range', async () => {
-          const index = 7;
+          const index = 8;
 
           await expect(dynamicNFT.getCat(index)).to.be.revertedWithCustomError(
             dynamicNFT,
