@@ -128,10 +128,12 @@ async function updateAbi({ targetProject, contracts }) {
     try {
       fs.writeFileSync(abiFile, abiData);
       console.log(
-        `>>>>>> ${targetProject} front end ABI file updated success!`
+        `>>>>>> ${targetProject} front end ${name} ABI file updated success!`
       );
     } catch (error) {
-      console.log(`>>>>>> ${targetProject} front end ABI file updated failed!`);
+      console.log(
+        `>>>>>> ${targetProject} front end ${name} ABI file updated failed!`
+      );
       console.error(error);
     }
 
