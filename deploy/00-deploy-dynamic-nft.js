@@ -3,7 +3,7 @@ const { developmentChains } = require('../helper-hardhat-config');
 const storeImagesAndMetadata = require('../utils/uploadToPinata');
 const { verify } = require('../utils/verify');
 
-const imgFilePath = '../images';
+const imgFilePath = '../images/nfts';
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments;
