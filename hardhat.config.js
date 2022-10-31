@@ -5,7 +5,8 @@ require('dotenv').config();
 
 const {
   RINKEBY_RPC_URL,
-  GOERLI_RPC_URL,
+  GOERLI_ALCHEMY_URL,
+  GOERLI_INFURA_URL,
   ETHEREUM_MAINNET_RPC_URL,
   PRIVATE_KEY,
   ETHERSCAN_API_KEY,
@@ -36,7 +37,8 @@ module.exports = {
     goerli: {
       chainId: 5,
       blockConfirmations: 6,
-      url: GOERLI_RPC_URL,
+      url: GOERLI_ALCHEMY_URL,
+      // url: GOERLI_INFURA_URL,
       accounts: [PRIVATE_KEY],
     },
   },
