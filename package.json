@@ -1,16 +1,16 @@
 {
   "version": "1.0.0",
   "scripts": {    
-    "deploy": "yarn hardhat deploy",
-    "deploy:goerli": "yarn hardhat deploy --network goerli",
-    "localhost": "yarn hardhat node",
-    "mint:local": "yarn hardhat run ./scripts/mint.js --network localhost", 
-    "mint:goerli": "yarn hardhat run ./scripts/mint.js --network goerli", 
-    "test": "yarn hardhat test",
-    "coverage": "yarn hardhat coverage",
-    "lint": "yarn solhint 'contract/*.sol'",
-    "lint:fix": "yarn solhint 'contract/*.sol' --fix",
-    "format": "yarn prettier --write ."
+    "deploy": "hardhat deploy --network localhost",
+    "deploy:goerli": "hardhat deploy --network goerli",
+    "localhost": "hardhat node",
+    "mint:local": "hardhat run ./scripts/mint.js --network localhost", 
+    "mint:goerli": "hardhat run ./scripts/mint.js --network goerli", 
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "lint": "solhint 'contract/*.sol'",
+    "lint:fix": "solhint 'contract/*.sol' --fix",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
