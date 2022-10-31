@@ -15,11 +15,17 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   // Uploaded images and metadata to Pinata IPFS
   // Use the records here and not duplicate uploading again
   const tokenURIs = [
+    // grey white
     'ipfs://QmSAsimJkGUYUDeHjrYNSdeLgd5WHVT6UNP78C4Zk4pgjk',
+    // grey
     'ipfs://QmYEEFbSnctc8i69oSNPVysZ11dHDAdiZ16kNMALKFhHBv',
+    // pink white
     'ipfs://QmQmesTuPE2X5ZnqoM4Y9jTEzX9zQmVVVFzgqvvdhpmFry',
+    // red white
     'ipfs://QmNSkVVhDGwhzXFN6fHdC23hjaSx3p7nQdSiziJiY392w9',
+    // red
     'ipfs://QmVAMuux5EVmy7PBPyWDKRm4d5Rqk92VUfbtfX4GDtc7BT',
+    // white
     'ipfs://QmZ3aohHAXDmB5EudURfsVuqnQ8gcgp7Eix1fpX3KAAwUu',
   ];
 
