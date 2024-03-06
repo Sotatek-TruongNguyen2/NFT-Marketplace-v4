@@ -27,20 +27,7 @@ module.exports = {
       chainId: 31337,
       blockConfirmations: 1,
       url: 'http://127.0.0.1:8545',
-    },
-    rinkeby: {
-      chainId: 4,
-      blockConfirmations: 6,
-      url: RINKEBY_RPC_URL,
-      accounts: [PRIVATE_KEY],
-    },
-    goerli: {
-      chainId: 5,
-      blockConfirmations: 6,
-      url: GOERLI_ALCHEMY_URL,
-      // url: GOERLI_INFURA_URL,
-      accounts: [PRIVATE_KEY],
-    },
+    }
   },
   namedAccounts: {
     deployer: {
@@ -51,25 +38,7 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
-    customChains: [
-      {
-        network: 'rinkeby',
-        chainId: 4,
-        urls: {
-          apiURL: 'http://api-rinkeby.etherscan.io/api',
-          browserURL: 'https://rinkeby.etherscan.io',
-        },
-      },
-      {
-        network: 'goerli',
-        chainId: 5,
-        urls: {
-          apiURL: 'http://api-goerli.etherscan.io/api',
-          browserURL: 'https://goerli.etherscan.io',
-        },
-      },
-    ],
+    apiKey: ETHERSCAN_API_KEY
   },
   gasReporter: {
     enabled: false, // set to true when needs a report
